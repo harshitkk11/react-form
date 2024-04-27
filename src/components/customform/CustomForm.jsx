@@ -2,6 +2,7 @@ import Input from "../input/Input";
 import CustomButton from "../custombutton/CustomButton";
 import "./CustomForm.css";
 import { useState } from "react";
+import { put } from "@vercel/blob";
 
 const CustomForm = () => {
   const [formData, setFormData] = useState({
@@ -10,10 +11,14 @@ const CustomForm = () => {
     phone: "",
     email: "",
     link: "",
-    file: null,
+    file: "",
   });
 
-  const submited = JSON.parse(localStorage.getItem("formData")) || [];
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [title, setTitle] = useState("Submit")
+
+  const submitted = JSON.parse(localStorage.getItem("formData")) || [];
 
   const onChangeInput = (e) => {
     const { name, value } = e.target;
@@ -22,17 +27,25 @@ const CustomForm = () => {
   };
 
   const handleFileUpload = (e) => {
-    setFormData({...formData, file: e.target.files[0]});
+    setSelectedFile(e.target.files[0]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData)
-    // const formdata = new FormData();
-    // formdata.append('file', formData.file);
-    // console.log(formdata);
-    submited.push(formData);
-    localStorage.setItem("formData", JSON.stringify(submited));
+    setTitle("Please Wait...")
+    setIsDisabled(true);
+
+    const { url } = await put(selectedFile.name, selectedFile, {
+      access: "public",
+      token: process.env.REACT_APP_BLOB_READ_WRITE_TOKEN,
+    });
+
+    const updatedFormData = { ...formData, file: url };
+    setFormData(updatedFormData);
+
+    submitted.push(updatedFormData);
+
+    localStorage.setItem("formData", JSON.stringify(submitted));
 
     setFormData({
       firstname: "",
@@ -40,8 +53,10 @@ const CustomForm = () => {
       phone: "",
       email: "",
       link: "",
-      file: null,
+      file: "",
     });
+    setTitle("Submit")
+    setIsDisabled(false);
   };
 
   return (
@@ -55,6 +70,7 @@ const CustomForm = () => {
           placeholder="First Name"
           onchange={(e) => onChangeInput(e)}
           value={formData.firstname}
+          disable={isDisabled}
         />
 
         <Input
@@ -65,6 +81,7 @@ const CustomForm = () => {
           placeholder="Last Name"
           onchange={(e) => onChangeInput(e)}
           value={formData.lastname}
+          disable={isDisabled}
         />
       </div>
 
@@ -76,6 +93,7 @@ const CustomForm = () => {
         placeholder="000-000-0000"
         onchange={(e) => onChangeInput(e)}
         value={formData.phone}
+        disable={isDisabled}
       />
 
       <Input
@@ -86,6 +104,7 @@ const CustomForm = () => {
         placeholder="you@example.com"
         onchange={(e) => onChangeInput(e)}
         value={formData.email}
+        disable={isDisabled}
       />
 
       <Input
@@ -96,12 +115,19 @@ const CustomForm = () => {
         placeholder="http://www.example.com"
         onchange={(e) => onChangeInput(e)}
         value={formData.link}
+        disable={isDisabled}
       />
 
-      <Input label="File Upload" type="file" name="file" onchange={(e) => handleFileUpload(e)} />
+      <Input
+        label="File Upload"
+        type="file"
+        name="file"
+        onchange={(e) => handleFileUpload(e)}
+        disable={isDisabled}
+      />
 
       <CustomButton
-        title="Submit"
+        title={title}
         styles={{
           background: "#000000",
           color: "#ffffff",
@@ -109,6 +135,7 @@ const CustomForm = () => {
           borderRadius: "10px",
         }}
         type="submit"
+        disable={isDisabled}
       />
     </form>
   );

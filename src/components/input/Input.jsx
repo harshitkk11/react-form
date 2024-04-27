@@ -8,6 +8,7 @@ const Input = ({
   placeholder,
   onchange,
   value,
+  disable
 }) => {
   return (
     <div className="input-wrapper">
@@ -19,7 +20,7 @@ const Input = ({
         required
         autoComplete={autocomplete}
         placeholder={placeholder}
-        // disabled={click}
+        disabled={disable}
         onChange={onchange}
         value={value}
       />

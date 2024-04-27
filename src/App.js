@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home/Home'
 import ContactUs from './pages/contactus/ContactUs'
-import Submited from './pages/Submited'
+import Submitted from './pages/submitted/Submitted'
 
 const App = () => {
   return (
@@ -15,8 +15,8 @@ const App = () => {
         element={<ContactUs />}
       />
       <Route
-        path='/submited'
-        element={<Submited />}
+        path='/submitted'
+        element={<Submitted />}
       />
     </Routes>
   )

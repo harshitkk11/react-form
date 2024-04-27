@@ -14,7 +14,7 @@
     font-size: 6rem;
 }
 
-.homepage-buttons {
+.buttons {
     width: 100%;
     display: flex;
     justify-content: center ;
@@ -27,7 +27,7 @@
         font-size: 4rem;
     }
 
-    .homepage-buttons {
+    .buttons {
         gap: 10px;
     }
 }

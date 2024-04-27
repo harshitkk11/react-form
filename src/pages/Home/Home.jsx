@@ -8,13 +8,13 @@ const Home = () => {
   return (
     <div className="home">
       <h1 className="homepage-heading">Welcome!</h1>
-      <div className="homepage-buttons">
+      <div className="buttons">
         <CustomButton
           title="Contact Us"
           styles={{ background: "#004F69", color: "#ffffff" }}
           onclick={() => navigate("/contactus")}
         />
-        <CustomButton title="Form Submited" onclick={() => navigate("/submited")} />
+        <CustomButton title="Submitted Data" onclick={() => navigate("/submitted")} />
       </div>
     </div>
   );
